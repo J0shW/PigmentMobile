@@ -4,6 +4,7 @@ type ColorContextType = {
     colors: Colors[];
     colorsMatched: Colors[];
     setRandomColor: () => void;
+    getColorById: (id: number) => Color | undefined;
 };
 
 type AppState = {

@@ -10,10 +10,15 @@ const ColorProvider: React.FC<React.ReactNode> = ({ children }) => {
     const [colorsMatched, setColorsMatched] = useState<Color[]>(ColorsMatched);
 
     const setRandomColor = () => {
-        const randomColor: Color = colors[Math.floor(Math.random() * colors.length)];
+        const randomColor: Color = colorsMatched[Math.floor(Math.random() * colorsMatched.length)];
         setCurrentColor(randomColor);
     };
-    return <ColorContext.Provider value={{ currentColor, colors, colorsMatched, setRandomColor }}>{children}</ColorContext.Provider>;
+
+    const getColorById = (id: number) => {
+        return colors.find(color => color.id === id);
+    };
+
+    return <ColorContext.Provider value={{ currentColor, colors, colorsMatched, setRandomColor, getColorById }}>{children}</ColorContext.Provider>;
 };
 
 export default ColorProvider;
