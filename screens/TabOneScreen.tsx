@@ -1,4 +1,4 @@
-import { StyleSheet, TouchableOpacity, FlatList, ListRenderItem } from 'react-native';
+import { StyleSheet, TouchableOpacity, FlatList, ScrollView } from 'react-native';
 
 import EditScreenInfo from '../components/EditScreenInfo';
 import { Text, View } from '../components/Themed';
@@ -24,22 +24,20 @@ export default function TabOneScreen({ navigation }: RootTabScreenProps<'TabOne'
 			<View style={[styles.currentColor, {backgroundColor: currentColor.hex}]}>
 				<Text>{currentColor.name}</Text>
 			</View>
-			<FlatList
-				style={styles.colorMatches}
-				data={matches}
-				renderItem={({ item, index }) => {
-					return (
-						<View key={index} style={[styles.match, {backgroundColor: item.hex}]}>
-							<Text>{item.name}</Text>
-						</View>
-					)	
-				}}
-				horizontal
-			/>
 			
-			{/* <View style={styles.colorMatches}>
-				
-			</View> */}
+			<ScrollView
+				style={styles.colorMatches}
+				horizontal={true}
+				snapToInterval={250}
+				decelerationRate="fast"
+			>
+				{matches.map((item, index) => 
+					<View key={index} style={[styles.match, {backgroundColor: item.hex}]}>
+						<Text>{item.name}</Text>
+					</View>
+				)}
+			</ScrollView>
+
 			<TouchableOpacity style={styles.button} onPress={handleRandomColorPress}>
 				<Text style={{color: 'black'}}>Click for random color</Text>
 			</TouchableOpacity>
