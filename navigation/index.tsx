@@ -8,7 +8,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { NavigationContainer, DefaultTheme, DarkTheme } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import * as React from 'react';
-import { ColorSchemeName, Pressable } from 'react-native';
+import { ActivityIndicator, ColorSchemeName, Pressable } from 'react-native';
 
 import Colors from '../constants/Colors';
 import useColorScheme from '../hooks/useColorScheme';
@@ -19,7 +19,42 @@ import TabTwoScreen from '../screens/TabTwoScreen';
 import { RootStackParamList, RootTabParamList, RootTabScreenProps } from '../types';
 import LinkingConfiguration from './LinkingConfiguration';
 
+import { auth } from '../config/firebase';
+import { useContext, useEffect, useState } from 'react';
+import { AuthenticatedUserContext } from '../context/AuthenticatedUserProvider';
+import { View } from '../components/Themed';
+import LoginScreen from '../screens/LoginScreen';
+import SignupScreen from '../screens/SignupScreen';
+
 export default function Navigation({ colorScheme }: { colorScheme: ColorSchemeName }) {
+  const { user, setUser } = useContext(AuthenticatedUserContext);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    // onAuthStateChanged returns an unsubscriber
+    const unsubscribeAuth = auth.onAuthStateChanged(async authenticatedUser => {
+      try {
+        await (authenticatedUser ? setUser(authenticatedUser) : setUser(null));
+      } catch (error) {
+        console.log(error);
+      } finally {
+        console.log('user', user);
+        setIsLoading(false);
+      }
+    });
+  
+    // unsubscribe auth listener on unmount
+    return unsubscribeAuth;
+  }, []);
+  
+  if (isLoading) {
+    return (
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+        <ActivityIndicator size='large' />
+      </View>
+    );
+  }
+  
   return (
     <NavigationContainer
       linking={LinkingConfiguration}
@@ -86,7 +121,7 @@ function BottomTabNavigator() {
       />
       <BottomTab.Screen
         name="TabTwo"
-        component={TabTwoScreen}
+        component={LoginScreen}
         options={{
           title: 'Settings',
           tabBarIcon: ({ color }) => <TabBarIcon name="cog" color={color} />,
