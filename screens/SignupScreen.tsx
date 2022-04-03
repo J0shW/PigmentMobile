@@ -4,8 +4,8 @@ import { useState } from 'react';
 import { StyleSheet, Text, View, Button as RNButton, TextInput } from 'react-native';
 
 import Button from '../components/Button';
-import InputField from '../components/Button';
-import ErrorMessage from '../components/Button';
+import InputField from '../components/InputField';
+import ErrorMessage from '../components/ErrorMessage';
 import { auth } from '../config/firebase';
 
 export default function SignupScreen({ navigation }) {
@@ -13,7 +13,7 @@ export default function SignupScreen({ navigation }) {
   const [password, setPassword] = useState('');
   const [passwordVisibility, setPasswordVisibility] = useState(true);
   const [rightIcon, setRightIcon] = useState('eye');
-  const [signupError, setSignupError] = useState('');
+  const [signupError, setSignupError] = useState<string>('');
 
   const handlePasswordVisibility = () => {
     if (rightIcon === 'eye') {
@@ -28,10 +28,11 @@ export default function SignupScreen({ navigation }) {
   const onHandleSignup = async () => {
     try {
       if (email !== '' && password !== '') {
+        console.log('create user', email, password);
         await auth.createUserWithEmailAndPassword(email, password);
       }
     } catch (error) {
-      console.log(error.message)
+      console.log('new error', error.message)
       setSignupError(error.message);
     }
   };

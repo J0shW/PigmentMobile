@@ -34,11 +34,12 @@ export default function Navigation({ colorScheme }: { colorScheme: ColorSchemeNa
     // onAuthStateChanged returns an unsubscriber
     const unsubscribeAuth = auth.onAuthStateChanged(async authenticatedUser => {
       try {
+        // console.log('authUser', JSON.stringify(authenticatedUser));
         await (authenticatedUser ? setUser(authenticatedUser) : setUser(null));
       } catch (error) {
         console.log(error);
       } finally {
-        console.log('user', user);
+        // console.log('user', user);
         setIsLoading(false);
       }
     });
@@ -123,8 +124,16 @@ function BottomTabNavigator() {
         name="TabTwo"
         component={LoginScreen}
         options={{
-          title: 'Settings',
-          tabBarIcon: ({ color }) => <TabBarIcon name="cog" color={color} />,
+          title: 'Login',
+          tabBarIcon: ({ color }) => <TabBarIcon name="user" color={color} />,
+        }}
+      />
+      <BottomTab.Screen
+        name="TabThree"
+        component={SignupScreen}
+        options={{
+          title: 'Sign Up',
+          tabBarIcon: ({ color }) => <TabBarIcon name="user-plus" color={color} />,
         }}
       />
     </BottomTab.Navigator>
