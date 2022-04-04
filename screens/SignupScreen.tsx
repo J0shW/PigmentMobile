@@ -12,6 +12,7 @@ export default function SignupScreen({ navigation }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [passwordVisibility, setPasswordVisibility] = useState(true);
+  const [confirmPassword, setConfirmPassword] = useState('');
   const [rightIcon, setRightIcon] = useState('eye');
   const [signupError, setSignupError] = useState<string>('');
 
@@ -28,8 +29,13 @@ export default function SignupScreen({ navigation }) {
   const onHandleSignup = async () => {
     try {
       if (email !== '' && password !== '') {
-        console.log('create user', email, password);
-        await auth.createUserWithEmailAndPassword(email, password);
+        if (password === confirmPassword) {
+          console.log('create user', email, password);
+          await auth.createUserWithEmailAndPassword(email, password);
+        } else {
+          setSignupError('Passwords do not match.');
+        }
+        
       }
     } catch (error) {
       console.log('new error', error.message)
@@ -41,15 +47,15 @@ export default function SignupScreen({ navigation }) {
     <View style={styles.container}>
       <StatusBar style='dark-content' />
       <Text style={styles.title}>Create new account</Text>
-      <TextInput
-        // inputStyle={{
-        //   fontSize: 14
-        // }}
-        // containerStyle={{
-        //   backgroundColor: '#fff',
-        //   marginBottom: 20
-        // }}
-        // leftIcon='email'
+      <InputField
+        inputStyle={{
+          fontSize: 14
+        }}
+        containerStyle={{
+          backgroundColor: '#fff',
+          marginBottom: 20
+        }}
+        leftIcon='email'
         placeholder='Enter email'
         autoCapitalize='none'
         keyboardType='email-address'
@@ -58,24 +64,43 @@ export default function SignupScreen({ navigation }) {
         value={email}
         onChangeText={text => setEmail(text)}
       />
-      <TextInput
-        // inputStyle={{
-        //   fontSize: 14
-        // }}
-        // containerStyle={{
-        //   backgroundColor: '#fff',
-        //   marginBottom: 20
-        // }}
-        // leftIcon='lock'
+      <InputField
+        inputStyle={{
+          fontSize: 14
+        }}
+        containerStyle={{
+          backgroundColor: '#fff',
+          marginBottom: 20
+        }}
+        leftIcon='lock'
         placeholder='Enter password'
         autoCapitalize='none'
         autoCorrect={false}
         secureTextEntry={passwordVisibility}
         textContentType='password'
-        // rightIcon={rightIcon}
+        rightIcon={rightIcon}
         value={password}
         onChangeText={text => setPassword(text)}
-        // handlePasswordVisibility={handlePasswordVisibility}
+        handlePasswordVisibility={handlePasswordVisibility}
+      />
+      <InputField
+        inputStyle={{
+          fontSize: 14
+        }}
+        containerStyle={{
+          backgroundColor: '#fff',
+          marginBottom: 20
+        }}
+        leftIcon='lock'
+        placeholder='Confirm password'
+        autoCapitalize='none'
+        autoCorrect={false}
+        secureTextEntry={passwordVisibility}
+        textContentType='password'
+        rightIcon={rightIcon}
+        value={confirmPassword}
+        onChangeText={text => setConfirmPassword(text)}
+        handlePasswordVisibility={handlePasswordVisibility}
       />
       {signupError ? <ErrorMessage error={signupError} visible={true} /> : null}
       <Button
@@ -100,7 +125,7 @@ export default function SignupScreen({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#e93b81',
+    backgroundColor: '#aaa',
     paddingTop: 50,
     paddingHorizontal: 12
   },
