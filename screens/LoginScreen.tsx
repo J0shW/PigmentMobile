@@ -6,7 +6,7 @@ import { StyleSheet, Text, View, Button as RNButton } from 'react-native';
 import Button from '../components/Button';
 import InputField from '../components/InputField';
 import ErrorMessage from '../components/ErrorMessage';
-import { auth } from '../config/firebase';
+import { auth, db } from '../config/firebase';
 import { AuthenticatedUserContext } from '../context/AuthenticatedUserProvider';
 
 export default function LoginScreen({ navigation }) {
@@ -17,7 +17,7 @@ export default function LoginScreen({ navigation }) {
   const [loginError, setLoginError] = useState('');
 
   const { user } = useContext(AuthenticatedUserContext);
-  const [name, setName] = useState(user?.displayName);
+  const [nickname, setNickname] = useState(user?.displayName);
 
   const handlePasswordVisibility = () => {
     if (rightIcon === 'eye') {
@@ -52,6 +52,17 @@ export default function LoginScreen({ navigation }) {
   };
 
   if (user) {
+    const myUser = db.collection('users').doc(user.uid).get().then((doc) => {
+      if (doc.exists) {
+          console.log("Document data:", doc.data().nickname);
+      } else {
+          // doc.data() will be undefined in this case
+          console.log("No such document!");
+      }
+    }).catch((error) => {
+        console.log("Error getting document:", error);
+    });
+
     return (
       <View style={styles.container}>
         <StatusBar style='dark-content' />
